@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindSchedule - AI Student Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0f172a, #1e293b);
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header, footer {
+      backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85);
+    }
+    .chat-ai {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 1rem;
+      border-radius: 1.2rem;
+      max-width: 85%;
+      align-self: flex-start;
+      line-height: 1.6;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .chat-user {
+      background: #2563eb;
+      padding: 0.75rem 1.2rem;
+      border-radius: 1.2rem;
+      max-width: 80%;
+      align-self: flex-end;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      animation: fadeIn 0.3s ease-out;
+    }
+    /* Style untuk Markdown */
+    .chat-ai strong {
+      color: #60a5fa; /* Warna biru muda untuk teks tebal */
+      font-weight: 800;
+    }
+    .chat-ai em {
+      color: #cbd5e1;
+      font-style: italic;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #chatArea::-webkit-scrollbar { width: 6px; }
+    #chatArea::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<div id="loginOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center p-6">
+  <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border border-slate-700">
+    <div class="text-6xl mb-4">🧠</div>
+    <h2 class="text-2xl font-bold mb-2">Pilih Profil Anda</h2>
+    <p class="text-slate-400 mb-8 text-sm">Gunakan profil simulasi untuk menyesuaikan asisten AI</p>
+    
+    <div class="space-y-4">
+      <button onclick="selectUser('biasa')" class="w-full bg-slate-700 hover:bg-slate-600 py-3.5 rounded-2xl font-semibold transition border border-slate-600">
+        User Biasa (Kuliah Saja)
+      </button>
+      <button onclick="selectUser('padat')" class="w-full bg-blue-600 hover:bg-blue-700 py-3.5 rounded-2xl font-semibold transition shadow-lg shadow-blue-500/30">
+        User Padat (Kuliah + Kerja)
+      </button>
+    </div>
+  </div>
+</div>
+
+<header class="p-4 shadow-md sticky top-0 z-50 flex justify-between items-center border-b border-slate-800">
+  <div class="flex items-center space-x-3">
+    <div class="text-2xl">🧠</div>
+    <div>
+      <h1 class="text-md font-bold leading-none">MindSchedule AI</h1>
+      <p id="userStatus" class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Offline</p>
+    </div>
+  </div>
+  <div class="flex items-center space-x-2">
+    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+    <span class="text-[10px] font-bold text-green-500 uppercase">Live Context</span>
+  </div>
+</header>
+
+<main id="chatArea" class="flex-1 p-4 pb-32 flex flex-col space-y-6 overflow-y-auto">
+  </main>
+
+<div class="p-4 bg-slate-900/90 backdrop-blur-lg fixed bottom-0 left-0 w-full z-50 border-t border-slate-800">
+  <div class="max-w-4xl mx-auto flex items-center space-x-3">
+    <input
+      id="userInput"
+      type="text"
+      placeholder="Tanyakan jadwal atau ceritakan perasaanmu..."
+      class="flex-1 bg-slate-800 text-white rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 border border-slate-700 transition-all"
+    />
+    <button
+      id="sendBtn"
+      class="bg-blue-600 hover:bg-blue-700 p-4 rounded-2xl transition shadow-lg shadow-blue-600/20"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-white" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
