@@ -5,8 +5,11 @@ const userStatus = document.getElementById("userStatus");
 
 let selectedUserType = "";
 
+// URL Backend Hugging Face kamu
+const API_URL = "https://faisalm-ag-mindschedule.hf.space/api/chat";
+
 /**
- * Fungsi untuk menangani pemilihan profil di awal (Login Overlay)
+ * Fungsi untuk menangani pemilihan profil di awal
  */
 function selectUser(type) {
     selectedUserType = type;
@@ -14,43 +17,35 @@ function selectUser(type) {
     // Sembunyikan overlay pemilihan user
     document.getElementById("loginOverlay").style.display = "none";
     
-    // Tentukan nama profil untuk tampilan
     const profileName = type === 'padat' ? 'User Padat' : 'User Biasa';
     
     // Update status di header
     userStatus.textContent = `MODE: ${profileName.toUpperCase()}`;
     userStatus.classList.replace("text-slate-500", "text-blue-400");
     
-    // Kirim pesan sambutan pertama dari AI secara otomatis
-    // Menggunakan nama profil pilihan sebagai sapaan
+    // Kirim pesan sambutan pertama
     addMessage(`🧠 **Halo ${profileName}!** Saya sudah siap mendampingimu. Apa ada kendala jadwal atau perasaan stres yang ingin kamu ceritakan hari ini?`, "ai");
 }
 
 /**
- * Fungsi untuk menambahkan gelembung chat ke layar
- * Dilengkapi dengan Markdown Parser sederhana (Bold, Italic, Bullet)
+ * Fungsi untuk menambahkan gelembung chat
  */
 function addMessage(text, sender) {
     const bubble = document.createElement("div");
     bubble.className = sender === "user" ? "chat-user" : "chat-ai";
     
-    // Logic untuk mengubah teks Markdown menjadi tag HTML
+    // Markdown Parser sederhana
     let formattedText = text
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Mengubah **teks** jadi tebal
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')            // Mengubah *teks* jadi miring
-        .replace(/^\s*[\-\*]\s+(.*)/gm, '• $1')          // Mengubah tanda - atau * di awal baris jadi bullet point
-        .replace(/\n/g, '<br>');                         // Mengubah baris baru (enter) menjadi tag <br>
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')            
+        .replace(/^\s*[\-\*]\s+(.*)/gm, '• $1')          
+        .replace(/\n/g, '<br>');                         
 
     bubble.innerHTML = formattedText;
     chatArea.appendChild(bubble);
-    
-    // Otomatis scroll ke pesan paling bawah
     chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-/**
- * Fungsi untuk menampilkan indikator sedang mengetik
- */
 function showTyping() {
     const typing = document.createElement("div");
     typing.className = "chat-ai opacity-50 italic text-sm flex items-center";
@@ -60,31 +55,25 @@ function showTyping() {
     chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-/**
- * Fungsi untuk menghapus indikator sedang mengetik
- */
 function removeTyping() {
     const typing = document.getElementById("typingIndicator");
     if (typing) typing.remove();
 }
 
 /**
- * Fungsi utama untuk mengirim pesan ke Backend FastAPI
+ * Fungsi utama untuk mengirim pesan ke Backend Hugging Face
  */
 async function sendMessage() {
     const message = userInput.value.trim();
     
-    // Validasi agar tidak mengirim pesan kosong atau jika user belum dipilih
     if (!message || selectedUserType === "") return;
 
-    // Tampilkan pesan user di layar
     addMessage(message, "user");
-    userInput.value = ""; // Kosongkan input
+    userInput.value = ""; 
     showTyping();
 
     try {
-        // Request ke backend menggunakan Fetch API
-        const response = await fetch("http://127.0.0.1:8000/api/chat", {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -93,7 +82,7 @@ async function sendMessage() {
             })
         });
 
-        if (!response.ok) throw new Error("Server bermasalah");
+        if (!response.ok) throw new Error("Server Hugging Face bermasalah");
 
         const data = await response.json();
         removeTyping();
@@ -106,14 +95,13 @@ async function sendMessage() {
 
     } catch (error) {
         removeTyping();
-        addMessage("⚠️ **Gagal terhubung ke server.** Pastikan terminal Python sudah menjalankan `python -m backend.main`.", "ai");
+        addMessage("⚠️ **Gagal terhubung ke AI.** Pastikan backend di Hugging Face statusnya masih 'Running'.", "ai");
         console.error("Error Detail:", error);
     }
 }
 
 // Event Listeners
 sendBtn.addEventListener("click", sendMessage);
-
 userInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         sendMessage();
