@@ -6,3 +6,4 @@ google-generativeai
 joblib
 scikit-learn
 nltk
+scalar-fastapi
