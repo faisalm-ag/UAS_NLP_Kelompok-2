@@ -5,12 +5,8 @@ const userStatus = document.getElementById("userStatus");
 
 let selectedUserType = "";
 
-// URL Backend Hugging Face kamu
 const API_URL = "https://faisalm-ag-mindschedule.hf.space/api/chat";
 
-/**
- * Fungsi untuk menangani pemilihan profil di awal
- */
 function selectUser(type) {
     selectedUserType = type;
     
@@ -18,8 +14,7 @@ function selectUser(type) {
     document.getElementById("loginOverlay").style.display = "none";
     
     const profileName = type === 'padat' ? 'User Padat' : 'User Biasa';
-    
-    // Update status di header
+
     userStatus.textContent = `MODE: ${profileName.toUpperCase()}`;
     userStatus.classList.replace("text-slate-500", "text-blue-400");
     
@@ -60,9 +55,8 @@ function removeTyping() {
     if (typing) typing.remove();
 }
 
-/**
- * Fungsi utama untuk mengirim pesan ke Backend Hugging Face
- */
+// Fungsi utama untuk mengirim pesan ke Backend Hugging Face
+
 async function sendMessage() {
     const message = userInput.value.trim();
     

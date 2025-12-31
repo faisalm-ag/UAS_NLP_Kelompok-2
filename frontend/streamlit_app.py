@@ -2,12 +2,11 @@ import streamlit as st
 import requests
 
 # Konfigurasi Halaman
-st.set_page_config(page_title="MindSchedule AI", page_icon="🧠")
+st.set_page_config(page_title="MindSchedule", page_icon="🧠")
 
-# URL API Hugging Face kamu (Gunakan URL yang sama dengan script.js)
 API_URL = "https://faisalm-ag-mindschedule.hf.space/api/chat"
 
-st.title("🧠 MindSchedule AI Assistant")
+st.title("🧠 MindSchedule")
 st.markdown("---")
 
 # 1. Pilihan Profil (Simulasi Login)
