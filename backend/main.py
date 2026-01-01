@@ -10,8 +10,8 @@ app = FastAPI(
     title="MindSchedule AI Backend",
     description="Backend API untuk asisten jadwal mahasiswa menggunakan Gemini AI",
     version="1.0.0",
-    docs_url=None,  # Matikan Swagger UI bawaan
-    redoc_url=None  # Matikan Redoc bawaan
+    docs_url=None,
+    redoc_url=None
 )
 
 # Konfigurasi CORS

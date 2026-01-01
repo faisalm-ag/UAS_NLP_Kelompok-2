@@ -2,52 +2,84 @@ import streamlit as st
 import requests
 
 # Konfigurasi Halaman
-st.set_page_config(page_title="MindSchedule", page_icon="🧠")
+st.set_page_config(page_title="MindSchedule AI", page_icon="🧠", layout="centered")
 
+# URL API (Sesuaikan jika sudah dideploy ke Hugging Face)
 API_URL = "https://faisalm-ag-mindschedule.hf.space/api/chat"
 
-st.title("🧠 MindSchedule")
+st.title("🧠 MindSchedule AI")
+st.caption("Asisten Manajemen Jadwal & Kesehatan Mental Mahasiswa")
 st.markdown("---")
 
-# 1. Pilihan Profil (Simulasi Login)
+# 1. Pilihan Profil (Simulasi Login dengan 3 User)
 if "user_type" not in st.session_state:
-    st.subheader("Pilih Profil Anda")
-    col1, col2 = st.columns(2)
+    st.subheader("Silakan Login / Pilih Profil Mahasiswa")
+    
+    # Membuat 3 kolom untuk 3 profil berbeda
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
-        if st.button("User Biasa (Kuliah Saja)"):
-            st.session_state.user_type = "biasa"
+        st.image("https://api.dicebear.com/7.x/avataaars/svg?seed=Tuti", width=100)
+        if st.button("Tuti Maesaroh"):
+            st.session_state.user_type = "tuti"
+            st.session_state.user_name = "Tuti Maesaroh"
             st.rerun()
+        st.caption("Jadwal: Normal (Kuliah)")
+
     with col2:
-        if st.button("User Padat (Kuliah + Kerja)"):
-            st.session_state.user_type = "padat"
+        st.image("https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin", width=100)
+        if st.button("Kevin Nurachman"):
+            st.session_state.user_type = "kevin"
+            st.session_state.user_name = "Kevin Nurachman"
             st.rerun()
+        st.caption("Jadwal: Padat (Organisasi)")
+
+    with col3:
+        st.image("https://api.dicebear.com/7.x/avataaars/svg?seed=Faisal", width=100)
+        if st.button("Faisal Ghani"):
+            st.session_state.user_type = "faisal"
+            st.session_state.user_name = "Faisal Ghani"
+            st.rerun()
+        st.caption("Jadwal: Super Padat (Kerja+Jepang)")
+
 else:
-    # Tampilan Chat jika sudah pilih profil
-    st.sidebar.info(f"Mode: {st.session_state.user_type.upper()}")
-    if st.sidebar.button("Reset Profil"):
+    # --- SIDEBAR INFO ---
+    st.sidebar.title("Profil Aktif")
+    st.sidebar.markdown(f"**Nama:** {st.session_state.user_name}")
+    
+    # Indikator Visual Kepadatan Jadwal
+    if st.session_state.user_type == "faisal":
+        st.sidebar.error("Status: SUPER PADAT (High Burnout Risk)")
+    elif st.session_state.user_type == "kevin":
+        st.sidebar.warning("Status: PADAT (Organisasi aktif)")
+    else:
+        st.sidebar.success("Status: NORMAL (Fokus Kuliah)")
+
+    if st.sidebar.button("Logout / Reset Profil"):
         del st.session_state.user_type
+        del st.session_state.user_name
         st.session_state.messages = []
         st.rerun()
 
-    # Inisialisasi Riwayat Pesan
+    # --- CHAT INTERFACE ---
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    # Tampilkan Riwayat
+    # Tampilkan Riwayat Chat
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
     # Input User
-    if prompt := st.chat_input("Tanya jadwal atau ceritakan kendalamu..."):
+    if prompt := st.chat_input("Tanya jadwal atau bicarakan perasaanmu hari ini..."):
         # Tampilkan pesan user
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Kirim ke Backend Hugging Face
+        # Kirim ke Backend
         with st.chat_message("assistant"):
-            with st.spinner("MindSchedule sedang menganalisis..."):
+            with st.spinner("MindSchedule sedang berpikir..."):
                 try:
                     payload = {
                         "message": prompt,
@@ -57,10 +89,11 @@ else:
                     
                     if response.status_code == 200:
                         data = response.json()
-                        full_response = data.get("chatbot_response", "Maaf, respon kosong.")
+                        # Pastikan key 'chatbot_response' sesuai dengan return dari backend/core/chatbot.py
+                        full_response = data.get("chatbot_response", "Maaf, sistem tidak memberikan jawaban.")
                         st.markdown(full_response)
                         st.session_state.messages.append({"role": "assistant", "content": full_response})
                     else:
-                        st.error("Gagal terhubung ke API.")
+                        st.error(f"Gagal terhubung ke API (Status: {response.status_code})")
                 except Exception as e:
-                    st.error(f"Terjadi kesalahan: {e}")
+                    st.error(f"Koneksi backend gagal: {e}")
