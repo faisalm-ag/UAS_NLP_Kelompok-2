@@ -7,7 +7,7 @@ st.set_page_config(page_title="MindSchedule AI", page_icon="🧠", layout="cente
 # URL API (Sesuaikan jika sudah dideploy ke Hugging Face)
 API_URL = "https://faisalm-ag-mindschedule.hf.space/api/chat"
 
-st.title("🧠 MindSchedule AI")
+st.title("🧠 MindSchedule")
 st.caption("Asisten Manajemen Jadwal & Kesehatan Mental Mahasiswa")
 st.markdown("---")
 
@@ -24,7 +24,7 @@ if "user_type" not in st.session_state:
             st.session_state.user_type = "tuti"
             st.session_state.user_name = "Tuti Maesaroh"
             st.rerun()
-        st.caption("Jadwal: Normal (Kuliah)")
+        st.caption("Jadwal: Normal")
 
     with col2:
         st.image("https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin", width=100)
@@ -32,7 +32,7 @@ if "user_type" not in st.session_state:
             st.session_state.user_type = "kevin"
             st.session_state.user_name = "Kevin Nurachman"
             st.rerun()
-        st.caption("Jadwal: Padat (Organisasi)")
+        st.caption("Jadwal: Padat")
 
     with col3:
         st.image("https://api.dicebear.com/7.x/avataaars/svg?seed=Faisal", width=100)
@@ -40,7 +40,7 @@ if "user_type" not in st.session_state:
             st.session_state.user_type = "faisal"
             st.session_state.user_name = "Faisal Ghani"
             st.rerun()
-        st.caption("Jadwal: Super Padat (Kerja+Jepang)")
+        st.caption("Jadwal: Super Padat")
 
 else:
     # --- SIDEBAR INFO ---
